@@ -1,0 +1,19 @@
+Option Explicit
+Public Sub cao_cbic_by_source()
+Dim ds As Worksheet
+Set ds = Worksheets("Decision")
+Dim sh4 As Worksheet
+Set sh4 = Worksheets("Sheet4")
+
+Dim LR As Long, i As Long, CR As Long
+LR = ds.Range("A" & Rows.Count).End(xlUp).Row
+CR = sh4.Range("A" & Rows.Count).End(xlUp).Row
+For i = 2 To CR
+    sh4.Range("B" & i) = Application.CountIfs(ds.Range("E2:E" & LR), sh4.Range("A" & i).Value, ds.Range("A2:A" & LR), "CBIC*")
+Next i
+
+For i = 2 To CR
+    sh4.Range("C" & i) = Application.CountIfs(ds.Range("E2:E" & LR), sh4.Range("A" & i).Value, ds.Range("A2:A" & LR), "CAO*")
+Next i
+
+End Sub

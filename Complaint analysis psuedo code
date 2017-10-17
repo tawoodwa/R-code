@@ -1,0 +1,11 @@
+Package list: .xslx package, ggplot2
+
+
+
+import -> "quarterlyfile.xslx"
+create metadata object->Cols("A:E" & "u")
+reshape quarterly file from wide to long as new object
+
+many to one merge of metadata to analysis file 
+save analysis file as R dataframe
+	export to excel for poetential graphing

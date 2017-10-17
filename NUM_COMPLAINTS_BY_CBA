@@ -1,0 +1,15 @@
+Public Sub Num_Complaints_by_cba()
+
+Dim ds As Worksheet
+Set ds = Worksheets("Decision")
+Dim sh5 As Worksheet
+Set sh5 = Worksheets("Sheet5")
+
+Dim LR As Long, i As Long, CR As Long
+LR = ds.Range("A" & Rows.Count).End(xlUp).Row
+CR = sh5.Range("A" & Rows.Count).End(xlUp).Row
+For i = 2 To CR
+    sh5.Range("B" & i) = Application.CountIfs(ds.Range("D2:D" & LR), sh5.Range("A" & i).Value)
+Next i
+
+End Sub

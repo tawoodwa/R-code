@@ -1,0 +1,68 @@
+## plots a bar graph of detailed Issues by count
+aip <-ggplot(subset(longdata,!is.na(Issue)),aes(x=Issue))
+ 
+png("dissbycount.png")
+dissbycount <- aip + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+print(dissbycount)
+dev.off()
+
+# Create a new sheet to contain the plot
+sheet <-createSheet(wb, sheetName = "all detailed issues by count")
+
+# Add the plot created previously
+addPicture("dissbycount.png", sheet, scale = 1, startRow = 4,
+          startColumn = 1)
+# Remove the plot from the disk
+res<-file.remove("dissbycount.png")
+
+
+#--------------------------------------------  
+## plots a bar graph of detailed Issues by count
+aip <-ggplot(subset(longdata,!is.na(Issue)),aes(x=Issue))
+ 
+png("dissbycount.png")
+dissbycount <- aip + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+print(dissbycount)
+dev.off()
+
+# Create a new sheet to contain the plot
+sheet <-createSheet(wb, sheetName = "all detailed issues by count")
+
+# Add the plot created previously
+addPicture("dissbycount.png", sheet, scale = 1, startRow = 4,
+          startColumn = 1)
+# Remove the plot from the disk
+res<-file.remove("dissbycount.png")
+#----------------------------------------------
+
+##subset CAO 
+ caodata <- longdata %>% filter(grepl("CAO", `Issue ID`))
+##cao detailed issues by count
+caip <-ggplot(subset(caodata,!is.na(Issue)),aes(x=Issue))
+caoissbycount <- caip + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()  
+
+##cao detailed Resolutions by count   
+carp <-ggplot(subset(caodata,!is.na(Resolution)),aes(x=Resolution))
+caoresbycount <- carp +  geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+
+#----------------------------------------------------------------------------
+##summissues by count
+sumic<-ggplot(subset(longdata,!is.na(summissue)),aes(x=summissue))
+
+sumic + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+
+#----------------------------------------------------------------------------
+##summresolution by count
+sumrc<-ggplot(subset(longdata,!is.na(summresolution)),aes(x=summresolution))
+
+sumrc + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+
+#----------------------------------------------------------------------------
+##summresolution by count
+sumec<-ggplot(subset(longdata,!is.na(summequipment)),aes(x=summequipment))
+
+sumec + geom_bar(stat = "count", fill = "lightgreen") + coord_flip()
+
+
+
+

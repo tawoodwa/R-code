@@ -1,0 +1,73 @@
+ longdata[,"summissue"] <- ""
+nrow(longdata[,1])=tl
+for (i in 1:tl) {
+  if (longdata[i,'Issue']=="Difficulty receiving products in general"||longddata[i,'Issue']=="Supplier service issues"){longdata[i,'summissue']="Access"
+    next
+  }
+    print(i)
+} 
+
+
+longdata$Issue<-recode(longdata$'summissue',"'Difficulty receiving products in general'=Access")
+
+
+longdata[,"summissue"] <- longdata[,'Issue']
+tl <- nrow(longdata[,1])
+for (i in 1:136.4) {
+  if (longdata[i,'Issue']=="Difficulty receiving products in general"||longdata[i,'Issue']=="Supplier service issues"){longdata[i,'summissue']="Access"
+  next
+  }
+  print(i)
+} 
+#---------------------------------------------------------------
+##Create summissue column
+longdata[,"summissue"] <- longdata[,'Issue']
+
+#recode summissue column
+longdata$'summissue'[which(longdata$'summissue' == "Difficulty receiving products in general"|longdata$'summissue' == "Difficulty receiving specific products")] = "Access"
+
+longdata$'summissue'[which(longdata$'summissue' == "Medical necessity"|longdata$'summissue' == "Billing,coverage,coordination of benefits"|longdata$'summissue' == "ABN issues"|longdata$'summissue' == "LCD issues")] = "Claims/Payment"
+
+longdata$'summissue'[which(longdata$'summissue' == "Supplier service issues"|longdata$'summissue' == "Delay due to lack of inventory")] = "Customer Service"
+
+longdata$'summissue'[which(longdata$'summissue' == "Problems repairing due to service issues"|longdata$'summissue' == "Problmes repairing due to lack of inventory")] = "Repairs"
+
+longdata$'summissue'[which(longdata$'summissue' == "Concern over standard receipt time"|longdata$'summissue' == "Difficulty finding new supplier"|longdata$'summissue' == "DMEPOS information issues")] = "Competitive Bidding Program"
+
+longdata$'summissue'[which(longdata$'summissue' == "Supplier compliance issues"|longdata$'summissue' == "Supplier fraud, waste, or abuse"|longdata$'summissue' == "Low quantity/quality")] = "Compliance with DMEPOS Supplier Standards"
+
+longdata$'summissue'[which(longdata$'summissue' == "Other")] = "Other"
+
+#-----------------------------------------------------------------------
+longdata[,"summresolution"] <- longdata[,'Resolution']
+
+longdata$'summresolution'[which(longdata$'summresolution' == "New supplier found"|longdata$'summresolution' == "New supplier resolved the issue")] = "New supplier Found"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Beneficiary educated about inquiry"|longdata$'summresolution' == "Beneficiary educated about suppliers"|longdata$'summresolution' == "Beneficiary educated about DMEPOS")] = "Beneficiary Educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Supplier educated about inquiry"|longdata$'summresolution' == "Supplier educated about DMEPOS")] = "Supplier educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Doctor/RA educated about inquiry"|longdata$'summresolution' == "Doctor/RA educated about suppliers"|longdata$'summresolution' == "Doctor/RA educated about DMEPOS")] = "Beneficiary Educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Supplier re-evaluated the case"|longdata$'summresolution' == "Current supplier resolved the issue"|longdata$'summresolution' == "Reinbursement or refund")] = "Resolved by current supplier"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Beneficiary paid OOP"|longdata$'summresolution' == "The case unresolved"|longdata$'summresolution' == "Referred to DMOA")] = "Unresolved"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Other")] = "Other"
+
+#---------------------------------------------------------------------
+longdata[,"summequipment"] <- longdata[,'Equipment']
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Entreal Nutrients")] = "Entreal Nutrients, Equipment and Supplies"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "External Infusion Pumps")] = "External Infusion Pumps and Supplies"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Hospital beds"|longdata$'summequipment' == "Support Surfaces"|longdata$'summequipment' == "Lifts"|longdata$'summequipment' == "Commode chairs"|longdata$'summequipment' == "Other general home")] = "General Home Equipment and Related Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Entreal Nutrients")] = "Negative Pressure Wound Therapy Pumps and Releated Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Nebulizers"|longdata$'summequipment' == "Oxygen Supplies/Equipment")] = "Respiratory Equipment and Related Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Power Mobility Devices (PMDs)"|longdata$'summequipment' == "Walking Aids"|longdata$'summequipment' == "Manual wheelchairs")] = "Standard Mobility Equipment and Related Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Other")] = "Other"

@@ -1,0 +1,82 @@
+
+
+sumrc<-ggplot(subset(longdata,!is.na(summresolution)), 
+              aes(x=summresolution, fill=summresolution))
+sumrcbycount <- sumrc + 
+    geom_bar(stat = "count") + 
+    coord_flip() +
+    scale_fill_brewer(palette="Paired")+
+	theme(axis.title.x=element_blank(),axis.title.y=element_blank(),legend.title = element_blank(),legend.position = 'none')+
+	geom_text(stat='count',aes(label=..count..),vjust=-1)
+
+print(sumrcbycount)
+
+
+scale_fill_manual(values = caopallete)
+
+
+
+##plots bar graph of detailed Resolutions by count
+arp <-ggplot(subset(longdata,!is.na(Resolution)),aes(x=Resolution, fill = Resolution)) 
+png("dresbycount.png",height=5, width=10,units = 'in', res=300)
+dresbycount <- arp + geom_bar(stat = "count") + 
+    coord_flip() +
+    scale_fill_manual(values = caopallete)+
+	theme(axis.title.x=element_blank(),axis.title.y=element_blank(),legend.title = element_blank(),legend.position = 'none') 
+print(dresbycount)
+dev.off()
+# Create a new sheet to contain the plot
+sheet <-createSheet(wb, sheetName = "all detailed resolutions by count")
+
+# Add the plot created previously
+addPicture("dresbycount.png", sheet, scale = 1, startRow = 4,
+          startColumn = 1)
+# Remove the plot from the disk
+res<-file.remove("dresbycount.png")
+
+
+options(digits = 3)
+dfTab <- as.data.frame(table(longdata$summresolution))
+colnames(dfTab)[1] <- "x"
+dfTab$lab <- as.character.numeric_version(100 * dfTab$Freq / sum(dfTab$Freq))
+dfTab$lab <- paste(dfTab$Freq,paste("(",dfTab$lab,"%)",sep=""),sep=" ")
+
+sumrc<-ggplot(dfTab, aes(x=x,y=Freq,fill=x))+geom_bar(stat= "identity")+     coord_flip() +
+        scale_fill_brewer(palette="caopallete")+
+        theme(axis.title.x=element_blank(),axis.title.y=element_blank(),legend.title = element_blank(),legend.position = 'none')+ geom_text(data=dfTab,aes(x=x,y=Freq,label=lab),vjust=0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+summresolution = c("Resolved by current supplier", "Resolved by current supplier", 
+    "Resolved by current supplier", "Supplier educated", "Beneficiary Educated", 
+    "Supplier educated", "Beneficiary Educated", "Beneficiary Educated", 
+    "Beneficiary Educated", "Beneficiary Educated", "Beneficiary Educated", 
+    "Unresolved", "Unresolved", "Beneficiary Educated", "Resolved by current supplier", 
+    "Resolved by current supplier", "Beneficiary Educated", "Beneficiary Educated", 
+    "New supplier Found", "Beneficiary Educated")
+	
+	
+	summissue = c("Access", "Compliance with DMEPOS Supplier Standards", 
+    "Compliance with DMEPOS Supplier Standards", "Access", "Access", 
+    "Compliance with DMEPOS Supplier Standards", "Customer Service", 
+    "Repairs", "Repairs", "Other", "Claims/Payment", "Repairs", 
+    "Access", "Access", "Compliance with DMEPOS Supplier Standards", 
+    "Access", "Access", "Customer Service", "Repairs", "Repairs"
+    )

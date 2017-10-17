@@ -1,0 +1,114 @@
+#library
+library("tidyverse")
+library("openxlsx")
+library("RColorBrewer")
+library("dplyr")
+library("rpivotTable")
+library(plotly)
+##imports dataset
+
+
+datatobeimported <- "DMEPOS Complaint Analysis Q2Rfile.xlsx"
+widedata <- read.xlsx(datatobeimported, sheet= 5, colNames = TRUE)
+
+
+
+## gets rid of all rows that are blank/na
+
+widedata <- widedata[!apply(is.na(widedata) | widedata == "", 1, all),]
+
+
+##renames columns to be used with reshape function
+
+Issue <- c("Issue.1","Issue.2","Issue.3","Issue.4")
+Equipment <- c("Equipment.1","Equipment.2","Equipment.3","Equipment.4")
+Resolution <- c("Resolution.1","Resolution.2","Resolution.3","Resolution.4")
+
+names(widedata)[6:9]<- Issue
+names(widedata)[11:14]<- Equipment
+names(widedata)[16:19]<- Resolution
+
+Columns <- c(Issue , Equipment , Resolution)
+
+##turns table from wide to long 
+longdata = reshape(widedata,direction="long",varying=Columns,idvar="Issue.ID")
+
+
+##add quarter column to long data set
+
+dl = nrow(longdata)
+qcolname <- longdata[1,"Issue.ID"]
+qcolname <- substring(qcolname,7,12)
+dl = nrow(longdata)
+longdata[ , "Quarter"] <- rep(qcolname,dl)
+#---------------------------------------------------------------
+##Create summissue column
+longdata[,"summissue"] <- longdata[,'Issue']
+
+#recode summissue column
+longdata$'summissue'[which(longdata$'summissue' == "Difficulty receiving products in general"|longdata$'summissue' == "Difficulty receiving specific products")] = "Access"
+
+longdata$'summissue'[which(longdata$'summissue' == "Medical necessity"|longdata$'summissue' == "Billing, coverage, coordination of benefits"|longdata$'summissue' == "ABN issues"|longdata$'summissue' == "ABN issues "|longdata$'summissue' == "LCD issues")] = "Claims/Payment"
+
+longdata$'summissue'[which(longdata$'summissue' == "Supplier service issues"|longdata$'summissue' == "Delay due to lack of inventory ")] = "Customer Service"
+
+longdata$'summissue'[which(longdata$'summissue' == "Problems repairing due to service issues "|longdata$'summissue' == "Problmes repairing due to lack of inventory "|longdata$'summissue' == "Problems repairing due to lack of inventory")] = "Repairs"
+
+longdata$'summissue'[which(longdata$'summissue' == "Concern over standard receipt time"|longdata$'summissue' == "Difficulty finding new supplier"|longdata$'summissue' == "DMEPOS information issues"||longdata$'summissue' == "Difficulty finding new supplier"|longdata$'summissue' == "DMEPOS Information Issues|longdata$'summissue' == "CBP information issues")] = "Competitive Bidding Program"
+
+longdata$'summissue'[which(longdata$'summissue' == "Supplier compliance issues"|longdata$'summissue' == "Supplier fraud, waste, or abuse"|longdata$'summissue' == "Low quantity/quality")] = "Compliance with DMEPOS Supplier Standards"
+
+longdata$'summissue'[which(longdata$'summissue' == "Other")] = "Other"
+
+#-----------------------------------------------------------------------
+#Create summresolution column
+longdata$'Resolution'[which(longdata$'Resolution' == "Supplier educated about inquiry_x000D_\n"|longdata$'Resolution' == "Supplier educated about DMEPOS_x000D_\n"|longdata$'Resolution' == "Supplier educated about DMEPOS\n" )] = "Supplier educated about DMEPOS"
+longdata[,"summresolution"] <- longdata[,'Resolution']
+
+#recode summresolution column 
+longdata$'summresolution'[which(longdata$'summresolution' == "New supplier found "|longdata$'summresolution' == "New supplier resolved the issue")] = "New supplier Found"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Beneficiary educated about inquiry "|longdata$'summresolution' == "Beneficiary educated about suppliers"|longdata$'summresolution' == "Beneficiary educated about DMEPOS"|longdata$'summresolution' == "Beneficiary educated about DMEPOS\n")] = "Beneficiary Educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Supplier educated about inquiry"|longdata$'summresolution' == "Supplier educated about DMEPOS"|longdata$'summresolution' == "Supplier educated about inquiry\n"|longdata$'summresolution' == "Supplier educated about inquiry\r\n"|longdata$'summresolution' == "Supplier educated about DMEPOS\n"|longdata$'summresolution' == "Supplier educated about DMEPOS\r\n")] = "Supplier educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Doctor/RA educated about inquiry "|longdata$'summresolution' == "Doctor/RA educated about suppliers"|longdata$'summresolution' == "Doctor/RA educated about DMEPOS")] = "Doctor or Refferal Agent educated"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Supplier re-evaluated the case"|longdata$'summresolution' == "Current supplier resolved the issue"|longdata$'summresolution' == "Reimbursement or refund "|longdata$'summresolution' == "Reimbursement or Refund")] = "Resolved by current supplier"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Beneficiary paid OOP"|longdata$'summresolution' == "The case unresolved "|longdata$'summresolution' == "Referred to DMOA"|longdata$'summresolution' == "The case unresolved")] = "Unresolved"
+
+longdata$'summresolution'[which(longdata$'summresolution' == "Other")] = "Other"
+
+#---------------------------------------------------------------------
+longdata[,"summequipment"] <- longdata[,'Equipment']
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Entreal Nutrients")] = "Entreal Nutrients, Equipment and Supplies"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "External Infusion Pumps")] = "External Infusion Pumps and Supplies"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Hospital beds"|longdata$'summequipment' == "Support surfaces"|longdata$'summequipment' == "Lifts"|longdata$'summequipment' == "Commode chairs"|longdata$'summequipment' == "Commode chairs"|longdata$'summequipment' == "Other general home")] = "General Home Equipment and Related Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Entreal Nutrients")] = "Negative Pressure Wound Therapy Pumps and Releated Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Nebulizers"|longdata$'summequipment' == "Oxygen Supplies/Equipment"|longdata$'summequipment' == "Continuous Positive Airway Pressure (CPAP) / Respiratory Assist Device (RAD)")] = "Respiratory Equipment and Related Supplies and Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Power Mobility Devices (PMDs)"|longdata$'summequipment' == "Walking Aids"|longdata$'summequipment' == "Power Mobility Devices (PMDs) other than scooter"|longdata$'summequipment' == "Power Mobility Devices (PMDs) SCOOTER"|longdata$'summequipment' == "Manual wheelchairs")] = "Standard Mobility Equipment and Related Accessories"
+
+longdata$'summequipment'[which(longdata$'summequipment' == "Other")] = "Other"
+
+detach("package:openxlsx")
+library("xlsx")
+## create a new workbook for outputs
+## possible values for type are : 'xls" and xlsx
+
+wb<- createWorkbook(type = "xlsx")
+sheet <- createSheet(wb, sheetName = "Complaint anlaysis data")
+addDataFrame(longdata, sheet)
+dtst <- Sys.Date()
+dtst <- gsub("-","",dtst,)
+qname <- longdata[1,"Issue.ID"]
+qname <- substring(qname,5,8)
+
+wbname <- paste(qname,dtst,".xlsx")
+saveWorkbook(wb, wbname)
