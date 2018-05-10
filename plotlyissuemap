@@ -1,0 +1,26 @@
+Library("plotly")
+plotly api key:
+your_api_key <- "42YRL9kE2z8gZeuX9fAm"
+your_plotly_username <- "tawoodwa"
+
+Sys.setenv("plotly_username"=your_plotly_username)
+Sys.setenv("plotly_api_key"=your_api_key)
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showland = TRUE,
+  landcolor = toRGB("gray85"),
+  subunitwidth = 1,
+  countrywidth = 1,
+  subunitcolor = toRGB("white"),
+  countrycolor = toRGB("white")
+)
+p <- plot_geo(dfTab, locationmode = 'USA-states', sizes = c(1, 250)) %>%
+  add_markers(
+    x = ~longitude, y = ~latitude, size = ~Freq,color = ~Freq, hoverinfo = "text",
+    text = ~paste(dfTab$city, "<br />", dfTab$lab)
+  ) %>%
+  layout(title = 'Quarter 3 Issues by Location<br>(Click legend to toggle)', geo = g)
+
+chart_link = plotly_POST(p, filename="issuemap2", sharing="public")
+chart_link
